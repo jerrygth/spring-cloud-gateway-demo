@@ -1,0 +1,41 @@
+server:
+  port: 8081
+
+#Euereka
+eureka:
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+    healthcheck:
+      enabled: true
+
+# Routes
+spring:
+  application:
+    name:api-gateway
+  cloud:
+    gateway:
+      routes:
+       - id: useracount
+         uri: lb://UserAccountRegistration
+         predicates:
+           - Path=/user/**
+  security:
+    oauth2:
+      client:
+        registration:
+          auth0:
+            client-id: kNMFNfTdc9DUSGjGB1PwIOVaIU0cXhj7
+            client-secret: mssl04OubhDTnTu2iyi2klyAju4tjJJ5xUEMwLW-50qMlBxsAMdvSfImY5IKvynP
+            scope: openid,profile,email
+            authorization-grant-type: authorization_code
+            issuer-uri: https://dev-cxy2s4rbkgtrmylk.us.auth0.com/
+            redirectUri: http://localhost:8081/login/oauth2/code/auth0
+        provider:
+          auth0:
+            authorization-uri: https://dev-cxy2s4rbkgtrmylk.us.auth0.com/authorize
+            token-uri: https://dev-cxy2s4rbkgtrmylk.us.auth0.com/oauth/token
+            user-info-uri: https://dev-cxy2s4rbkgtrmylk.us.auth0.com/userinfo
+            jwk-set-uri: https://dev-cxy2s4rbkgtrmylk.us.auth0.com/.well-known/jwks.json
+            user-name-attribute: email
